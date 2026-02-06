@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Valentine 💘</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      touch-action: manipulation; /* Verbessert Reaktionszeit auf Mobilgeräten */
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #ffb6c1;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 20px;
+      z-index: 2;
+      max-width: 90%;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #e6005c;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    #yesBtn {
+      background: #ff4d88;
+      color: white;
+      z-index: 10;
+    }
+
+    #noBtn {
+      background: #ccc;
+      /* Wichtig für iPhone: fixed oder absolute im Body-Kontext */
+      position: fixed; 
+      z-index: 999;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 24px;
+      animation: floatUp linear infinite;
+      color: #ff4d88;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="content">
+    <h1>Will iubi my valentine ❤️</h1>
+    <div class="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn" style="position: static;">No</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const content = document.getElementById("content");
+
+    // Funktion für die Bewegung
+    function moveButton(e) {
+      // Verhindert das "Klicken" und Scrollen auf dem iPhone
+      if(e) e.preventDefault();
+
+      // Button auf fixed setzen, falls er noch im Textfluss ist
+      noBtn.style.position = "fixed";
+
+      // Den gesamten Viewport als Spielfeld nutzen (minus Puffer)
+      const padding = 50;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const x = Math.random() * maxX + (padding / 2);
+      const y = Math.random() * maxY + (padding / 2);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // Sowohl Mouseover (PC) als auch Touchstart (iPhone) abfangen
+    noBtn.addEventListener("mouseover", moveButton);
+    noBtn.addEventListener("touchstart", (e) => {
+        moveButton(e);
+    }, {passive: false});
+
+    // Falls man es doch schafft zu klicken
+    noBtn.addEventListener("click", (e) => {
+        moveButton(e);
+    });
+
+    yesBtn.addEventListener("click", () => {
+      // No-Button entfernen, damit er nicht weiter rumgeistert
+      noBtn.remove();
+      content.innerHTML = `
+        <h1>Yaaay 💕</h1>
+        <h1>I looove youuu ❤️</h1>
+      `;
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    setInterval(createHeart, 300);
+  </script>
+</body>
+</html>
