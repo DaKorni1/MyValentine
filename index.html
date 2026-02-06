@@ -8,7 +8,7 @@
     * {
       box-sizing: border-box;
       font-family: 'Comic Sans MS', cursive, sans-serif;
-      touch-action: manipulation; /* Verbessert Reaktionszeit auf Mobilgeräten */
+      touch-action: manipulation;
     }
 
     body {
@@ -23,17 +23,21 @@
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       padding: 30px;
       border-radius: 20px;
       z-index: 2;
       max-width: 90%;
+      max-height: 90vh; /* Damit es auf kleinen Bildschirmen nicht abgeschnitten wird */
       position: relative;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     h1 {
-      font-size: 2em;
+      font-size: 1.8em;
       color: #e6005c;
+      margin-bottom: 20px;
     }
 
     .buttons {
@@ -60,9 +64,23 @@
 
     #noBtn {
       background: #ccc;
-      /* Wichtig für iPhone: fixed oder absolute im Body-Kontext */
       position: fixed; 
       z-index: 999;
+    }
+
+    /* Styling für das Bild nach dem Klick */
+    .valentine-img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 15px;
+      margin-top: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .heart {
@@ -96,42 +114,28 @@
     const yesBtn = document.getElementById("yesBtn");
     const content = document.getElementById("content");
 
-    // Funktion für die Bewegung
     function moveButton(e) {
-      // Verhindert das "Klicken" und Scrollen auf dem iPhone
       if(e) e.preventDefault();
-
-      // Button auf fixed setzen, falls er noch im Textfluss ist
       noBtn.style.position = "fixed";
-
-      // Den gesamten Viewport als Spielfeld nutzen (minus Puffer)
       const padding = 50;
       const maxX = window.innerWidth - noBtn.offsetWidth - padding;
       const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
       const x = Math.random() * maxX + (padding / 2);
       const y = Math.random() * maxY + (padding / 2);
-
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
     }
 
-    // Sowohl Mouseover (PC) als auch Touchstart (iPhone) abfangen
     noBtn.addEventListener("mouseover", moveButton);
-    noBtn.addEventListener("touchstart", (e) => {
-        moveButton(e);
-    }, {passive: false});
-
-    // Falls man es doch schafft zu klicken
-    noBtn.addEventListener("click", (e) => {
-        moveButton(e);
-    });
+    noBtn.addEventListener("touchstart", (e) => { moveButton(e); }, {passive: false});
+    noBtn.addEventListener("click", (e) => { moveButton(e); });
 
     yesBtn.addEventListener("click", () => {
-      // No-Button entfernen, damit er nicht weiter rumgeistert
       noBtn.remove();
+      // ERSETZE 'image.png' HIER DURCH DEINEN DATEINAMEN
       content.innerHTML = `
         <h1>Yaaay 💕</h1>
+        <img src="image.png" alt="Valentine" class="valentine-img">
         <h1>I looove youuu ❤️</h1>
       `;
     });
